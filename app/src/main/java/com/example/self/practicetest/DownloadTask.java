@@ -40,9 +40,13 @@ public class DownloadTask extends AsyncTask<String, Integer, Integer>{
         File file = null;
 
         try {
+            if (strings.length == 0) {
+                Log.e(APPTAG, "failed");
+                return TYPE_FAILED;
+            }
             long downloadedLength = 0; // 记录已经下载的文件的长度
             String downloadUrl = strings[0];
-            String fileName = downloadUrl.substring(downloadUrl.indexOf("/"));
+            String fileName = downloadUrl.substring(downloadUrl.lastIndexOf("/"));
             Log.e(APPTAG, "filename: " + fileName);
             String directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
             file = new File(directory + fileName);
@@ -74,8 +78,10 @@ public class DownloadTask extends AsyncTask<String, Integer, Integer>{
 
                 while((len = inputStream.read(bytes)) != -1) {
                     if (isCanceled) {
+                        Log.e(APPTAG, "isCanceled");
                         return TYPE_CANCELED;
                     } else if (isPaused) {
+                        Log.e(APPTAG, "isPaused");
                         return TYPE_PAUSED;
                     } else {
                         total += len;
@@ -124,7 +130,6 @@ public class DownloadTask extends AsyncTask<String, Integer, Integer>{
 
     @Override
     protected void onProgressUpdate(Integer... values) {
-        Log.e(APPTAG, "on progress update");
         int progress = values[0];
         if (progress > lastProgress) {
             mListener.onProgress(progress); // 更新下载的 progress bar
@@ -137,6 +142,7 @@ public class DownloadTask extends AsyncTask<String, Integer, Integer>{
         Log.e(APPTAG, "on progress Executed");
         switch (status) {
             case TYPE_SUCCESS:
+                mListener.onSuccess();
                 break;
             case TYPE_CANCELED:
                 mListener.onCanceled();

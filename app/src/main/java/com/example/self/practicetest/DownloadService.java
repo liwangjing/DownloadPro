@@ -1,7 +1,5 @@
 package com.example.self.practicetest;
 
-
-import android.app.AliasActivity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -25,12 +23,12 @@ public class DownloadService extends Service{
 
     private String mDownloadUrl;
 
-    private DownloadBinder mBinder;
+    private DownloadBinder mBinder = new DownloadBinder();
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return mBinder;
     }
 
     private DownloadListener mListener = new DownloadListener() {
@@ -79,11 +77,11 @@ public class DownloadService extends Service{
     class DownloadBinder extends Binder{
 
         public void startDownload(String url) {
+            Log.e(APPTAG, "startDownload");
             if (mDownloadTask == null) {
-                Log.e(APPTAG, "startDownload");
                 mDownloadUrl = url;
                 mDownloadTask = new DownloadTask(mListener);
-                mDownloadTask.execute();
+                mDownloadTask.execute(mDownloadUrl); //execute download task
                 startForeground(1, getNotification("Downloading...", 0));
                 makeToast("start download...");
             }

@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (mBinder != null) {
-                    String url = "";
+                    String url = "http://raw.githubusercontent.com/guolindev/eclipse/master/eclipse-inst-win64.exe";
                     mBinder.startDownload(url);
                 }
             }
