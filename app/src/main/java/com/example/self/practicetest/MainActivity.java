@@ -38,10 +38,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initView();
 
+        // 开始 DownloadService
         intent = new Intent(this, DownloadService.class);
         startService(intent);
 
+        // bind DownloadService, 通过 binder来通信
         bindService(intent, mConnection, BIND_AUTO_CREATE);
+
+        // 动态获取权限
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
@@ -100,8 +104,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbindService(mConnection);
-        stopService(intent);
+        // 这两句都写，才是正确的做法。
+        unbindService(mConnection); // 没有这一句会导致内存泄漏
+        stopService(intent); // 没有这一句，service就不会停止
     }
 
     private void makeToast(String string) {

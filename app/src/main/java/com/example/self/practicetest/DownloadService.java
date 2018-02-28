@@ -135,4 +135,5 @@ public class DownloadService extends Service{
     private void makeToast(String string) {
         Toast.makeText(getApplicationContext(), string, Toast.LENGTH_SHORT).show();
     }
+
 }
